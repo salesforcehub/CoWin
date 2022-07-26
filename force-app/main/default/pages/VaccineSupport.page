@@ -1,0 +1,16 @@
+<!--HOME PAGE FOR COWIN PUBLIC SITE-->
+<apex:page showHeader="false" sidebar="false">
+    <apex:includeLightning />    
+    <div id="vaccineContainer" />    
+    <script>
+        $Lightning.use("c:cowinVaccineApp", function() {
+            $Lightning.createComponent("c:cowinVaccine",
+            { 
+            },
+            "vaccineContainer",
+            function(cmp) {
+                //console.log('Cowin Vaccine Component in VF page');
+            });
+        });
+    </script>
+</apex:page>

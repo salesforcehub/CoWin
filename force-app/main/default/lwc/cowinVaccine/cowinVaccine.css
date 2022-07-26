@@ -1,0 +1,42 @@
+.spinner-padding {
+    padding-top: 2%;
+}
+
+.covid{
+    font-size:x-large;
+    align-items: center;
+}
+
+.whiteColorSearch{
+  color:#000000;
+  font-weight:normal;
+}
+
+.districtsHighlight{
+  color:#f7931d;
+  font-weight:normal;
+}
+
+.datatable-covishield{
+    color:rgb(7, 7, 7);
+    background-color:#e9dd6f;
+}
+
+.datatable-covaxin{
+    color:rgb(7, 7, 7);
+    background-color:#f0a06b;
+}
+
+.datatable-slotAvailable{
+    color:green;
+    font-weight: bolder;
+}
+
+.datatable-slotUnavailable{
+    color:red;
+    font-weight: bolder;
+}
+
+.lgc-bg-inverse {
+    background-color: #1d7b81;
+}

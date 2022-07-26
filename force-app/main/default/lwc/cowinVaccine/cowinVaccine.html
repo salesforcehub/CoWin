@@ -1,0 +1,272 @@
+<template>
+    <div style="display: block;background-color: rgb(255, 255, 255);justify-content: center;align-items: center;padding: 100px;padding-bottom: 10px;padding-top:20px">
+        <div>
+            <a href="https://salesforcebinge.com/" target="_blank">
+                <img width="170" height="170" alt="Vitra" name="large" src="https://salesforcebinge.com/wp-content/uploads/2020/11/cropped-cropped-cropped-medium-1-1.png" style="display: block;">
+            </a>
+            
+        </div>
+        <div style="background: #f7931d;" data-aura-rendered-by="57:2;a">
+            <div style="display: flex;justify-content: center;align-items: center;">
+                <span class="covid"><b>Covid 19 Vaccine Booking - India</b></span>
+            </div>
+        </div>
+
+        <template if:true={showFilters}>
+            <div>
+                <div class="slds-m-top_medium slds-m-bottom_x-large" style="display: flex;justify-content: center;align-items: center;">
+                    <div class="slds-p-around_medium lgc-bg-inverse">
+                        <lightning-button-group>
+                            <lightning-button label="Show All" variant="inverse" onclick={handleResetFilters}></lightning-button>
+                            <lightning-button label="Available Slots" variant="inverse" onclick={handleAvailableSlotSearch}></lightning-button>
+                            <lightning-button label="Minimum Age : 18" variant="inverse" onclick={handle18PlusSearch}></lightning-button>
+                            <lightning-button label="Minimum Age : 45" variant="inverse" onclick={handle45PlusSearch}></lightning-button>
+                            <lightning-button label="COVISHIELD" variant="inverse" onclick={handleCovishieldSearch}></lightning-button>
+                            <lightning-button label="COVAXIN" variant="inverse" onclick={handleCovaxinSearch}></lightning-button>
+                        </lightning-button-group>
+                        <div class="whiteColorSearch">
+                            <lightning-input type="search" placeholder="Search by Center Name" onchange={updateSearch}></lightning-input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        
+        <div class="demo-only demo-only_viewport" style="height:0.5rem;position:relative">
+        <div class="slds-notification-container">
+            <div aria-live="assertive" aria-atomic="true" class="slds-assistive-text">event notification: Indian Audience</div>
+                <section class="slds-notification" role="dialog" aria-labelledby="noti52" aria-describedby="dialog-body-id-42">
+                    <div class="slds-notification__body" id="dialog-body-id-42">
+                        <a class="slds-notification__target slds-media" href="#">
+                            <lightning-icon icon-name="utility:announcement" alternative-text="Alert!" title="Alert" size="x-small" class="slds-icon-text-error"></lightning-icon>
+                            <div class="slds-media__body">
+                                    <p> &nbsp; This site works only for people in India.</p>
+                            </div>
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!--SEARCH SLOTS BY CITY/DISTRICT TABS-->
+        <div style="display: block;border: 2px outset #33323218;background-color: rgb(231, 235, 236);">
+            <lightning-tabset active-tab-value={activeTab}>
+                <div class="slds-m-around_x-small">
+                    <lightning-tab label="Search By District" value="1" onactive={handleActive}>
+                        <lightning-card title="Find CoWin Vaccination Slots by District" icon-name="custom:custom63">
+                            <div class="slds-var-m-around_medium">
+                                <lightning-layout class="slds-grid slds-grid_vertical-align-end slds-wrap">
+                                    <slot class="slds-slot">
+                                        <lightning-layout-item
+                                            class="slds-p-around_small slds-size_12-of-12 slds-small-size_4-of-12 slds-medium-size_2-of-12 slds-large-size_2-of-12">
+                                            <slot>
+                                                <lightning-input type="search" onchange={handleKeyChange}
+                                                    label="Pick a District" id="pickCity" value={searchKey}>
+                                                </lightning-input>
+                                            </slot>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item
+                                            class="slds-p-around_small slds-size_12-of-12 slds-small-size_4-of-12 slds-medium-size_2-of-12 slds-large-size_2-of-12">
+                                            <slot>
+                                                <lightning-input type="date" name="inputDate" label="Pick a Date"
+                                                    id="slotDate" datestyle="medium" onchange={handleDateChange}>
+                                                </lightning-input>
+                                            </slot>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item
+                                            class="slds-p-around_small slds-size_12-of-12 slds-small-size_2-of-12 slds-medium-size_2-of-12 slds-large-size_1-of-12">
+                                            <slot>
+                                                <lightning-button label="Search" onclick={handleCalendarByDistrict}
+                                                    id="district-call">
+                                                </lightning-button>
+                                            </slot>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item
+                                            class="slds-p-around_small slds-size_12-of-12 slds-small-size_2-of-12 slds-medium-size_2-of-12 slds-large-size_1-of-12">
+                                            <slot>
+                                                <lightning-button label="Clear" onclick={resetAll}
+                                                    id="reset-district">
+                                                </lightning-button>
+                                            </slot>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item class="slds-size_12-of-12">
+                                            <slot></slot>
+                                        </lightning-layout-item>
+                                    </slot>
+                                </lightning-layout>
+
+                                <template if:true={vaccDistricts}>
+                                    <template for:each={vaccDistricts} for:item="district">
+                                        <p class="districtsHighlight" key={district.District_Id__c} data-name={district.District__c}
+                                            data-id={district.District_Id__c} onclick={selectionChangeHandler}>
+                                            <b>
+                                                {district.District__c}
+                                            </b>
+                                        </p>
+                                    </template>
+                                </template>
+                            </div>
+                        </lightning-card>
+
+                        <template if:true={noDataToDisplay}>
+                            <lightning-card>
+                                <c-slots-availability slot-message={slotMsg}></c-slots-availability>
+                            </lightning-card>
+                        </template>
+                        
+                        
+                        <template if:true={noFilteredDataToDisplay}>
+                            <lightning-card>
+                                <c-slots-availability slot-message={filterMsg}></c-slots-availability>
+                            </lightning-card>
+                        </template>
+
+                        <template if:true={sessionsAvailable}>
+                            <lightning-card>
+                                <h3 slot="title">
+                                    <lightning-icon icon-name="standard:asset_action" alternative-text="sessions"
+                                        title="Vaccine Sessions" size="medium"></lightning-icon>
+                                </h3>
+                                <div class="slds-scrollable--y">
+                                    <lightning-datatable class="activeDT" key-field="id" data={data}
+                                        columns={sessionColumns} onrowaction={handleRowAction} hide-checkbox-column
+                                        disabled={data.length} wrap-text-max-lines="2">
+                                    </lightning-datatable>
+                                </div>
+                                </br>
+                                <lightning-layout horizontal-align="space">
+                                    <lightning-layout-item flexibility="auto">
+                                        <lightning-button label="Previous" icon-name="utility:chevronleft" onclick={previousHandler}>
+                                        </lightning-button>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item flexibility="auto">
+                                        Page {page} of {totalPage}
+                                    </lightning-layout-item>
+                                    <lightning-layout-item flexibility="auto">
+                                        <lightning-button label="Next" icon-name="utility:chevronright" icon-position="right"
+                                            onclick={nextHandler}></lightning-button>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                                </br>
+                            </lightning-card>
+                        </template>
+
+                        
+                        <template if:true={isLoading}>
+                            <div class="demo-only" style="height:6rem;position:relative">
+                                <div class="slds-spinner_container">
+                                    <div role="status" class="slds-spinner slds-spinner_medium">
+                                        <span class="slds-assistive-text">Loading</span>
+                                        <div class="slds-spinner__dot-a" style="color: #f7931d;"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                </div>
+                                </div>
+                            </div>
+                        </template>
+                    </lightning-tab>
+
+                    <!--SEARCH SLOTS BY PINCODE-->
+                    <lightning-tab label="Search By PIN" value="2" onactive={handleActive}>
+                        <lightning-card title="Find CoWin Vaccination Slots by Pincode" icon-name="custom:custom63">
+                            <div class="slds-var-m-around_medium">
+                                <lightning-layout class="slds-grid slds-grid_vertical-align-end slds-wrap">
+                                    <slot class="slds-slot">
+                                        <lightning-layout-item
+                                            class="slds-p-around_small slds-size_12-of-12 slds-small-size_4-of-12 slds-medium-size_2-of-12 slds-large-size_2-of-12">
+                                            <slot>
+                                                <lightning-input onchange={handlePincodeChange} label="Enter Pincode">
+                                                </lightning-input>
+                                            </slot>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item
+                                            class="slds-p-around_small slds-size_12-of-12 slds-small-size_4-of-12 slds-medium-size_2-of-12 slds-large-size_2-of-12">
+                                            <slot>
+                                                <lightning-input type="date" name="inputDate" label="Pick a Date"
+                                                    id="pinSlotDate" datestyle="medium" onchange={handleDateChange}>
+                                                </lightning-input>
+                                            </slot>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item
+                                            class="slds-p-around_small slds-size_12-of-12 slds-small-size_2-of-12 slds-medium-size_2-of-12 slds-large-size_1-of-12">
+                                            <slot>
+                                                <lightning-button label="Search" onclick={handleCalendarByPin}>
+                                                </lightning-button>
+                                            </slot>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item
+                                            class="slds-p-around_small slds-size_12-of-12 slds-small-size_2-of-12 slds-medium-size_2-of-12 slds-large-size_1-of-12">
+                                            <slot>
+                                                <lightning-button label="Clear" onclick={resetAll}
+                                                    id="reset-pin">
+                                                </lightning-button>
+                                            </slot>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item class="slds-size_12-of-12">
+                                            <slot></slot>
+                                        </lightning-layout-item>
+                                    </slot>
+                                </lightning-layout>
+                            </div>
+                        </lightning-card>
+
+                        
+                        <template if:true={noPinSlotsToDisplay}>
+                            <lightning-card>
+                                <c-slots-availability slot-message={slotMsg}></c-slots-availability>
+                            </lightning-card>
+                        </template>
+
+                        
+                        <template if:true={noFilteredDataToDisplay}>
+                            <lightning-card>
+                                <c-slots-availability slot-message={filterMsg}></c-slots-availability>
+                            </lightning-card>
+                        </template>
+
+                        <template if:true={isLoading}>
+                            <div class="demo-only" style="height:6rem;position:relative">
+                                <div class="slds-spinner_container">
+                                    <div role="status" class="slds-spinner slds-spinner_medium" style="color: #f7931d;">
+                                        <span class="slds-assistive-text">Loading</span>
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template if:true={pinSessionsAvailable}>
+                            <lightning-card>
+                                <h3 slot="title">
+                                    <lightning-icon icon-name="standard:asset_action" alternative-text="sessions"
+                                        title="Vaccine Sessions" size="medium"></lightning-icon>
+                                </h3>
+                                <div class="slds-scrollable--y">
+                                    <lightning-datatable class="activeDT" key-field="id" data={data}
+                                        columns={sessionColumns} onrowaction={handleRowAction} hide-checkbox-column
+                                        disabled={data.length} wrap-text-max-lines="2">
+                                    </lightning-datatable>
+                                </div> 
+                                </br>
+                                <lightning-layout horizontal-align="space">
+                                    <lightning-layout-item flexibility="auto">
+                                        <lightning-button label="Previous" icon-name="utility:chevronleft" onclick={previousHandler}>
+                                        </lightning-button>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item flexibility="auto">
+                                        Page {page} of {totalPage}
+                                    </lightning-layout-item>
+                                    <lightning-layout-item flexibility="auto">
+                                        <lightning-button label="Next" icon-name="utility:chevronright" icon-position="right"
+                                            onclick={nextHandler}></lightning-button>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                                </br>     
+                            </lightning-card>
+                        </template>
+                    </lightning-tab>
+                </div>
+            </lightning-tabset>
+        </div>
+    </div>
+</template>
